@@ -144,3 +144,5 @@ elif menu == "Katalog Skincare":
 
 st.markdown("---")
 st.markdown("<p style='text-align: center; color: gray;'>© 2026 GlowUp Clinic - Dibuat dengan Cinta</p>", unsafe_allow_html=True
+            
+            # update baru
