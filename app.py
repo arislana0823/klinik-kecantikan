@@ -5,99 +5,94 @@ from datetime import date
 
 # 1. Konfigurasi Halaman
 st.set_page_config(
-    page_title="Klinik Cantik Caca | Perawatan Kulit Impian", 
+    page_title="Klinik Cantik Caca | High Contrast", 
     page_icon="💖", 
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="wide"
 )
 
-# 2. CSS Kustom "Pink Contrast Mode"
+# 2. CSS Kustom - Perbaikan Kontras Warna
 st.markdown("""
     <style>
-    /* Background Utama Jadi Pink Tua */
+    /* Background Utama Pink Tua */
     .stApp { background-color: #D81B60; }
     
-    /* Judul Utama Jadi Pink Soft */
+    /* Judul Utama Pink Soft */
     .klinik-title {
         color: #FFD1DC; 
         font-family: 'Georgia', serif; 
         text-align: center; 
         font-size: 55px; 
         font-weight: bold;
-        text-shadow: 2px 2px #880E4F;
+        text-shadow: 3px 3px #880E4F;
     }
     
-    /* Slogan Jadi Pink Soft */
+    /* Slogan Pink Soft */
     .klinik-slogan {
         color: #FFB6C1; 
-        font-family: 'Times New Roman', serif; 
         text-align: center; 
         font-style: italic; 
         font-size: 24px;
-        margin-bottom: 25px;
+        margin-bottom: 30px;
     }
 
-    /* Teks Umum di Background Tua Jadi Pink Soft */
+    /* Memaksa Semua Teks di Background Tua Jadi Pink Soft */
     h1, h2, h3, p, span, label, .stMarkdown {
         color: #FFD1DC !important;
     }
 
-    /* Font Metrik (Angka) Jadi Pink Soft */
+    /* Angka Metrik Jadi Putih agar Sangat Jelas */
     [data-testid="stMetricValue"] {
-        color: #FFD1DC !important;
+        color: #FFFFFF !important;
+        font-weight: bold;
     }
     [data-testid="stMetricLabel"] {
         color: #FFB6C1 !important;
     }
 
-    /* Tabel: Background tetap soft, Teks di dalamnya jadi Pink Tua */
+    /* Tabel: Background Pink Soft, Teks Pink Tua (Kontras Tinggi) */
     .stTable {
         background-color: #FFD1DC;
-        border-radius: 10px;
-        overflow: hidden;
+        border-radius: 15px;
+        padding: 10px;
     }
     .stTable td, .stTable th {
         color: #880E4F !important;
+        font-weight: bold;
+        border-bottom: 1px solid #D81B60 !important;
     }
     
-    /* Sidebar: Background Tetap Pink Soft, Font Jadi Pink Tua */
+    /* Sidebar: Background Pink Soft, Teks Pink Tua */
     [data-testid="stSidebar"] {
         background-color: #FFD1DC;
     }
-    [data-testid="stSidebar"] .stMarkdown p, 
-    [data-testid="stSidebar"] .stRadio label,
+    [data-testid="stSidebar"] p, 
+    [data-testid="stSidebar"] label,
     [data-testid="stSidebar"] h2 {
         color: #880E4F !important;
         font-weight: bold;
     }
 
-    /* Input & Selectbox agar kontras */
+    /* Form Input agar kontras */
     .stTextInput>div>div>input, .stSelectbox>div>div>div {
-        background-color: #FFD1DC !important;
+        background-color: #FFF0F5 !important;
         color: #880E4F !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- SIDEBAR & NAVIGASI ---
+# --- SIDEBAR NAVIGASI ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=100)
     st.markdown("<h2 style='text-align: center;'>Beauty Suite</h2>", unsafe_allow_html=True)
     st.markdown("---")
-    
-    menu = st.radio(
-        "Main Menu ✨",
-        ["💖 Home & Jadwal", "📝 Pendaftaran Pasien", "👩‍⚕️ Profil Dokter", "🔍 Diagnosis & Obat", "🏢 Tentang Klinik"],
-        key="nav_menu"
-    )
-    st.markdown("---")
+    menu = st.radio("Main Menu ✨", ["🏠 Dashboard", "📝 Pendaftaran", "👩‍⚕️ Profil Dokter", "🔍 Diagnosis", "🏢 Tentang Klinik"])
 
-# --- KONTEN UTAMA ---
+# --- HEADER UTAMA ---
 st.markdown("<h1 class='klinik-title'>KLINIK CANTIK CACA</h1>", unsafe_allow_html=True)
 st.markdown("<p class='klinik-slogan'>\"Kecantikanmu adalah keajaiban dunia, rawatlah dengan cinta.\"</p>", unsafe_allow_html=True)
 
-# --- MENU 1: HOME & JADWAL ---
-if menu == "💖 Home & Jadwal":
+# --- ISI MENU ---
+if menu == "🏠 Dashboard":
     st.subheader("Overview Jadwal Hari Ini 🌸")
     col1, col2, col3, col4 = st.columns(4)
     with col1: st.metric("Total Pasien", "12", "↑3")
@@ -105,54 +100,47 @@ if menu == "💖 Home & Jadwal":
     with col3: st.metric("Pasien Menunggu", "4", "↓2")
     with col4: st.metric("Layanan Populer", "Facial Glow")
 
-    st.write("### 📅 Jadwal Antrean Pasien")
-    data_antrean = {
-        "No Antrean": [101, 102, 103, 104, 105],
-        "Nama Pasien": ["Rina", "Santi", "Siska", "Dewi", "Anita"],
-        "Layanan": ["Facial Glow", "Peeling", "Botox", "Facial Glow", "Laser"],
-        "Jam Datang": ["08:00", "08:30", "09:00", "09:15", "09:45"],
-        "Status": ["Selesai", "Selesai", "Menunggu", "Menunggu", "Menunggu"]
-    }
-    st.table(pd.DataFrame(data_antrean))
+    st.write("### 📅 Jadwal Antrean")
+    df = pd.DataFrame({
+        "No": [101, 102, 103, 104],
+        "Nama Pasien": ["Rina", "Santi", "Siska", "Dewi"],
+        "Layanan": ["Facial Glow", "Peeling", "Botox", "Laser"],
+        "Status": ["Selesai", "Selesai", "Menunggu", "Menunggu"]
+    })
+    st.table(df)
 
-# --- MENU 2: PENDAFTARAN ---
-elif menu == "📝 Pendaftaran Pasien":
-    st.subheader("Formulir Pendaftaran ✍️")
-    with st.form("form_regis"):
-        nama = st.text_input("Nama Lengkap")
-        umur = st.slider("Umur", 15, 60, 25)
-        layanan = st.selectbox("Layanan", ["Facial Glow", "Laser Whitening", "Peeling", "Botox"])
+elif menu == "📝 Pendaftaran":
+    st.subheader("Pendaftaran Pasien Baru")
+    with st.form("form_reg"):
+        st.text_input("Nama Lengkap")
+        st.selectbox("Pilih Layanan", ["Facial Glow", "Laser", "Peeling", "Botox"])
         if st.form_submit_button("Daftar Sekarang ✨"):
             st.balloons()
-            st.success(f"Berhasil! {nama} sudah masuk sistem.")
+            st.success("Data berhasil masuk ke sistem!")
 
-# --- MENU 3: PROFIL DOKTER ---
 elif menu == "👩‍⚕️ Profil Dokter":
-    st.subheader("Tim Dokter Spesialis 💖")
-    dokter_data = {
-        "Nama Dokter": ["dr. Cindy Permata, Sp.DV", "dr. Sarah Amelia, Sp.KK", "dr. Bella Jovita", "dr. Mega Putri", "dr. Alika Najwa"],
-        "Keahlian": ["Skin Specialist", "Laser Specialist", "Injeksi & Filler", "Estetika Medis", "Anti-Aging"],
-        "Sertifikasi": ["CNA Cosmetic", "Dermatologist", "Filler Certified", "Esthetician", "Anti-Aging Cert."]
-    }
-    st.table(pd.DataFrame(dokter_data))
+    st.subheader("Dokter Spesialis & Sertifikasi")
+    dokter = pd.DataFrame({
+        "Nama Dokter": ["dr. Cindy Permata", "dr. Sarah Amelia", "dr. Bella Jovita", "dr. Mega Putri", "dr. Alika Najwa"],
+        "Sertifikasi": ["Sp.DV (Skin)", "Laser Certified", "Filler Expert", "Esthetician", "Anti-Aging Cert."]
+    })
+    st.table(dokter)
 
-# --- MENU 4: DIAGNOSIS & OBAT ---
-elif menu == "🔍 Diagnosis & Obat":
-    st.subheader("Diagnosis Awal & Rekomendasi 🧪")
-    kondisi = st.selectbox("Masalah Kulit:", ["Jerawat Ringan", "Flek Hitam", "Kulit Kering"])
-    if st.button(" Diagnosis Sekarang"):
-        st.write(f"Diagnosis awal untuk **{kondisi}** sedang diproses...")
-        st.info("Rekomendasi: Gunakan serum rutin dan konsultasi ke dokter terkait.")
+elif menu == "🔍 Diagnosis":
+    st.subheader("Simulasi Diagnosis & Rekomendasi Obat")
+    masalah = st.selectbox("Pilih Masalah Kulit:", ["Jerawat Ringan", "Flek Hitam", "Kulit Kering"])
+    if st.button("Lihat Saran"):
+        st.write(f"Diagnosis: Kondisi {masalah} terdeteksi.")
+        st.info("Saran Obat: Gunakan Moisturizer dan Sunscreen rutin. Silakan temui dr. Cindy.")
 
-# --- MENU 5: TENTANG KLINIK ---
 elif menu == "🏢 Tentang Klinik":
-    st.subheader("Profil & Struktur Organisasi 🏢")
-    st.write("Klinik Cantik Caca: Mewujudkan kecantikan natural dengan cinta.")
-    st.table(pd.DataFrame({
-        "Jabatan": ["Direktur", "Manager", "Humas"],
+    st.subheader("Struktur Organisasi Klinik")
+    struktur = pd.DataFrame({
+        "Jabatan": ["Direktur Utama", "Manager", "Humas"],
         "Nama": ["Caca Beautyani", "Dewi Sartika", "Anita Rahayu"]
-    }))
+    })
+    st.table(struktur)
 
 # Footer
 st.markdown("---")
-st.markdown("<div style='text-align: center; color: #FFB6C1;'>Klinik Cantik Caca Dashboard © 2026</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #FFB6C1;'>Klinik Cantik Caca © 2026 | Perawatan Kulit Impian</div>", unsafe_allow_html=True)
