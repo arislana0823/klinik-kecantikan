@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from datetime import date
 
 # 1. Konfigurasi Halaman
 st.set_page_config(
@@ -9,65 +8,43 @@ st.set_page_config(
     layout="wide"
 )
 
-# 2. CSS Kustom - High Contrast & Full Data Style
+# 2. CSS Kustom untuk Fix Warna Font & Kontras
 st.markdown("""
     <style>
     /* Background Utama Pink Tua */
     .stApp { background-color: #D81B60; }
     
-    /* Judul Utama Pink Soft */
+    /* Judul & Slogan */
     .klinik-title {
-        color: #FFD1DC; 
-        font-family: 'Georgia', serif; 
-        text-align: center; 
-        font-size: 55px; 
-        font-weight: bold;
-        text-shadow: 3px 3px #880E4F;
-        margin-bottom: 0px;
+        color: #FFD1DC; text-align: center; font-size: 55px; font-weight: bold;
+        text-shadow: 3px 3px #880E4F; font-family: 'Georgia', serif;
     }
-    
-    /* Slogan Pink Soft */
-    .klinik-slogan {
-        color: #FFB6C1; 
-        text-align: center; 
-        font-style: italic; 
-        font-size: 22px;
-        margin-bottom: 30px;
-    }
+    .klinik-slogan { color: #FFB6C1; text-align: center; font-style: italic; font-size: 22px; margin-bottom: 30px; }
 
-    /* Memaksa Semua Teks di Background Tua Jadi Pink Soft */
-    h1, h2, h3, p, span, label, .stMarkdown {
-        color: #FFD1DC !important;
-    }
-
-    /* Tabel: Background Pink Soft, Teks Pink Tua (Kontras Tinggi) */
-    .stTable {
-        background-color: #FFD1DC;
-        border-radius: 15px;
-        padding: 15px;
-    }
-    .stTable td, .stTable th {
-        color: #880E4F !important;
-        font-weight: bold;
-        font-size: 16px;
+    /* FIX TABEL: Memaksa tulisan berwarna Pink Tua agar terlihat jelas */
+    .stTable { background-color: #FFD1DC !important; border-radius: 15px; padding: 10px; }
+    .stTable td, .stTable th { 
+        color: #880E4F !important; 
+        font-weight: bold !important; 
+        font-size: 16px !important;
         border-bottom: 1px solid #D81B60 !important;
     }
-    
-    /* Sidebar: Background Pink Soft, Teks Pink Tua */
-    [data-testid="stSidebar"] {
-        background-color: #FFD1DC;
-    }
-    [data-testid="stSidebar"] p, 
-    [data-testid="stSidebar"] label,
-    [data-testid="stSidebar"] h2 {
-        color: #880E4F !important;
-        font-weight: bold;
-    }
 
-    /* Gaya Card Metrik */
-    [data-testid="stMetricValue"] {
-        color: #FFFFFF !important;
-        font-weight: bold;
+    /* FIX FORM & INPUT: Memaksa teks input tidak berwarna putih */
+    input, select, textarea, [data-baseweb="select"] {
+        background-color: #FFF0F5 !important;
+        color: #880E4F !important;
+    }
+    label { color: #FFD1DC !important; font-weight: bold; }
+
+    /* Metrik (Angka Dashboard) */
+    [data-testid="stMetricValue"] { color: #FFFFFF !important; font-weight: bold; }
+    [data-testid="stMetricLabel"] { color: #FFB6C1 !important; }
+
+    /* Sidebar */
+    [data-testid="stSidebar"] { background-color: #FFD1DC; }
+    [data-testid="stSidebar"] p, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] label {
+        color: #880E4F !important; font-weight: bold;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -83,86 +60,72 @@ with st.sidebar:
 st.markdown("<h1 class='klinik-title'>KLINIK CANTIK CACA</h1>", unsafe_allow_html=True)
 st.markdown("<p class='klinik-slogan'>\"Kecantikanmu adalah keajaiban dunia, rawatlah dengan cinta.\"</p>", unsafe_allow_html=True)
 
-# --- MENU 1: DASHBOARD ---
+# --- LOGIKA MENU ---
+
 if menu == "🏠 Dashboard":
-    st.subheader("Ringkasan Aktivitas Hari Ini 🌸")
+    st.subheader("Overview Aktivitas Klinik 🌸")
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Pasien Hari Ini", "45", "↑12")
-    c2.metric("Konsultasi Selesai", "32", "↑8")
+    c1.metric("Total Pasien", "45", "↑12")
+    c2.metric("Selesai", "32", "↑8")
     c3.metric("Menunggu", "13", "↓4")
-    c4.metric("Treatment Favorit", "Glass Skin Laser")
-    
-    st.write("### 📅 Antrean Pasien Saat Ini")
-    df_antrean = pd.DataFrame({
-        "No": [201, 202, 203, 204],
-        "Nama": ["Riana", "Santi", "Siska", "Dewi"],
-        "Layanan": ["Facial Glow", "Laser Rejuvenation", "Botox Injeksi", "Chemical Peeling"],
-        "Dokter": ["dr. Cindy", "dr. Sarah", "dr. Bella", "dr. Mega"]
-    })
-    st.table(df_antrean)
+    c4.metric("Treatment Terlaris", "Glass Skin")
 
-# --- MENU 2: TIM DOKTER (7 DATA) ---
+elif menu == "📝 Pendaftaran":
+    st.subheader("Form Pendaftaran Pasien Baru ✍️")
+    with st.form("form_pendaftaran"):
+        st.text_input("Nama Lengkap")
+        st.selectbox("Pilih Layanan", ["Facial Glow", "Laser Rejuvenation", "Botox Injeksi", "Chemical Peeling"])
+        st.selectbox("Pilih Dokter", ["dr. Cindy Permata", "dr. Sarah Amelia", "dr. Bella Jovita", "dr. Mega Putri"])
+        if st.form_submit_button("Daftar Sekarang ✨"):
+            st.balloons()
+            st.success("Pasien berhasil didaftarkan ke sistem!")
+
 elif menu == "👩‍⚕️ Tim Dokter Ahli":
-    st.subheader("7 Dokter Spesialis & Praktisi Terbaik Kami")
-    data_dokter = {
-        "Nama Dokter": [
-            "dr. Cindy Permata, Sp.DV", "dr. Sarah Amelia, Sp.KK", "dr. Bella Jovita", 
-            "dr. Mega Putri", "dr. Alika Najwa", "dr. Rania Safira", "dr. Tasya Kamila"
-        ],
-        "Keahlian Utama": [
-            "Spesialis Kulit & Kelamin", "Laser & Rejuvenation", "Injeksi Filler & Botox", 
-            "Estetika Medis & Peeling", "Anti-Aging Specialist", "Acne Care Expert", "Hydration Glow"
-        ],
-        "Sertifikasi": [
-            "Board Certified", "Laser Professional Cert.", "Master of Injectables", 
-            "Esthetician Certified", "CIDESO International", "Acne Management", "Diplomate Aesthetic"
-        ]
-    }
-    st.table(pd.DataFrame(data_dokter))
+    st.subheader("7 Dokter Spesialis & Praktisi Terbaik")
+    df_dokter = pd.DataFrame({
+        "Nama Dokter": ["dr. Cindy Permata, Sp.DV", "dr. Sarah Amelia, Sp.KK", "dr. Bella Jovita", "dr. Mega Putri", "dr. Alika Najwa", "dr. Rania Safira", "dr. Tasya Kamila"],
+        "Keahlian": ["Spesialis Kulit", "Laser Specialist", "Injeksi & Botox", "Estetika Medis", "Anti-Aging", "Acne Care", "Glow Expert"],
+        "Sertifikasi": ["Board Certified", "Laser Cert.", "Master Injector", "Diplomate Esthetic", "CIDESO", "Acne Expert", "Hydra Cert."]
+    })
+    st.table(df_dokter)
 
-# --- MENU 3: DIAGNOSIS WAJAH (10 DATA) ---
 elif menu == "🔍 Diagnosis Wajah":
-    st.subheader("Simulasi Diagnosis & Solusi Kulit Wajah")
-    masalah = st.selectbox("Pilih Keluhan Wajah Kamu:", [
-        "Jerawat Pasir (Bruntusan)", "Jerawat Batu (Kistik)", "Flek Hitam (Melasma)", 
-        "Bekas Jerawat Merah (PIE)", "Kulit Kusam & Gelap", "Pori-Pori Besar", 
-        "Garis Halus & Kerutan", "Kulit Sangat Kering", "Kantung Mata Gelap", "Wajah Berminyak Parah"
+    st.subheader("Simulasi Diagnosis 10 Masalah Wajah")
+    pilihan = st.selectbox("Apa Keluhan Wajah Kamu?", [
+        "Jerawat Bruntusan", "Jerawat Batu", "Flek Hitam", "Bekas Jerawat", 
+        "Kulit Kusam", "Pori-Pori Besar", "Garis Halus", "Kulit Kering", 
+        "Mata Panda", "Berminyak Parah"
     ])
     
-    saran_db = {
-        "Jerawat Pasir (Bruntusan)": "Saran: Gunakan Cleanser BHA & Serum Niacinamide.",
-        "Jerawat Batu (Kistik)": "Saran: Wajib Konsultasi Dokter (Mungkin butuh Injeksi Acne).",
-        "Flek Hitam (Melasma)": "Saran: Gunakan Sunscreen SPF 50 & Treatment Laser.",
-        "Bekas Jerawat Merah (PIE)": "Saran: Gunakan Azelaic Acid & Hindari Scrub kasar.",
-        "Kulit Kusam & Gelap": "Saran: Rutin Chemical Peeling & Serum Vitamin C.",
-        "Pori-Pori Besar": "Saran: Gunakan Retinol malam hari & Clay Mask rutin.",
-        "Garis Halus & Kerutan": "Saran: Treatment Botox atau Filler di Klinik.",
-        "Kulit Sangat Kering": "Saran: Pakai Moisturizer Tekstur Cream & Hyaluronic Acid.",
-        "Kantung Mata Gelap": "Saran: Gunakan Eye Cream Caffeine & Perbaiki pola tidur.",
-        "Wajah Berminyak Parah": "Saran: Gunakan Gel Moisturizer & Double Cleansing."
+    diag_data = {
+        "Jerawat Bruntusan": "Saran: Lakukan Facial Glow & gunakan serum BHA.",
+        "Jerawat Batu": "Saran: Konsultasi dr. Rania untuk injeksi acne.",
+        "Flek Hitam": "Saran: Treatment Laser Rejuvenation rutin.",
+        "Bekas Jerawat": "Saran: Serum Niacinamide & Chemical Peeling.",
+        "Kulit Kusam": "Saran: Diamond Glow treatment & Vitamin C.",
+        "Pori-Pori Besar": "Saran: Penggunaan Retinol & clay mask rutin.",
+        "Garis Halus": "Saran: Injeksi Botox oleh dr. Bella Jovita.",
+        "Kulit Kering": "Saran: Hyaluronic Acid & Facial Hydration.",
+        "Mata Panda": "Saran: Eye treatment & perbaiki pola tidur.",
+        "Berminyak Parah": "Saran: Gunakan gel moisturizer & double cleansing."
     }
     
-    if st.button("Dapatkan Analisis Cepat"):
-        st.write(f"### 📋 Hasil Untuk: {masalah}")
-        st.info(saran_db[masalah])
+    if st.button("Lihat Hasil Diagnosis"):
+        st.info(f"Diagnosis Awal: {pilihan}. \n\n {diag_data[pilihan]}")
 
-# --- MENU 4: PROFIL KLINIK ---
 elif menu == "🏢 Profil Klinik":
     st.subheader("Mengenal Klinik Cantik Caca")
     st.write("""
-    Didirikan pada tahun 2018 di bawah kepemimpinan **Direktur Utama Caca Beautyani, S.ST**, 
-    Klinik Cantik Caca telah melayani lebih dari 10.000 pasien dengan dedikasi tinggi. 
-    Kami berfokus pada hasil yang natural dan kesehatan kulit jangka panjang.
+    Didirikan pada tahun 2018 di bawah kepemimpinan **Direktur Utama Caca Beautyani, S.ST**. 
+    Klinik ini berfokus pada kesehatan kulit jangka panjang dengan teknologi medis terbaru.
     """)
-    
     st.write("### 🏗️ Struktur Organisasi Utama")
-    data_struktur = {
+    df_struktur = pd.DataFrame({
         "Jabatan": ["Direktur Utama", "Manager Operasional", "Kepala Medis", "Admin Keuangan", "Humas"],
-        "Nama": ["Caca Beautyani, S.ST", "Dewi Sartika, SE", "dr. Cindy Permata, Sp.DV", "Sarah Amalia", "Anita Rahayu"],
-        "Masa Bakti": ["6 Tahun", "5 Tahun", "6 Tahun", "4 Tahun", "3 Tahun"]
-    }
-    st.table(pd.DataFrame(data_struktur))
+        "Nama": ["Caca Beautyani, S.ST", "Dewi Sartika, SE", "dr. Cindy Permata, Sp.DV", "Sarah Amalia", "Anita Rahayu"]
+    })
+    st.table(df_struktur)
 
 # Footer
 st.markdown("---")
-st.markdown("<div style='text-align: center; color: #FFB6C1;'>Klinik Cantik Caca Dashboard © 2026 | Built with 💖</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #FFB6C1;'>© 2026 Klinik Cantik Caca Dashboard | Dibuat dengan 💖</div>", unsafe_allow_html=True)
